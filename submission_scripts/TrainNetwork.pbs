@@ -1,0 +1,44 @@
+#!/bin/bash -l
+# declare a name for this job to be my_serial_job
+# it is recommended that this name be kept to 16 characters or less
+#PBS -N TRAINING
+
+# request the queue (enter the possible names, if omitted, default is the default)
+# this job is going to use the default
+#PBS -q gpuq
+
+# request 1 nod1
+#PBS -l nodes=1:ppn=16
+#PBS -l gpus=1
+
+# Specify the gpu feature
+#PBS -l feature=gpu
+
+# Specify your resource account (use qr command to determine)
+#PBS -A BrainSci
+
+# request 0 hours and 15 minutes of wall time
+# (Default is 1 hour without this directive)
+#PBS -l walltime=120:00:00
+
+# specify your email address
+#PBS -M Carl.W.Harris.21@dartmouth.edu
+#PBS -m ea
+
+# Join error and standard output into one file
+#PBS -j oe
+
+# By default, PBS scripts execute in your home directory, not the
+# directory from which they were submitted. The following line
+# places the job in the directory from which the job was submitted.
+cd $PBS_O_WORKDIR
+
+# Parse the PBS_GPUFILE to determine which GPU you have been assigned
+# and unset CUDA_VISIBLE_DEVICES
+gpuNum=`cat $PBS_GPUFILE | sed -e 's/.*-gpu//g'`
+
+# Pass the GPU number as an argument to your program
+conda activate DLC-GPU
+python TrainNetwork.py
+exit 0
+

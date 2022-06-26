@@ -1,0 +1,22 @@
+#!/bin/bash -l
+#PBS -N SOCBEHAV
+
+#PBS -l nodes=1:ppn=24
+
+#PBS -A BrainSci
+
+#PBS -l walltime=120:00:00
+
+#PBS -M Carl.W.Harris.21@dartmouth.edu
+#PBS -m ea
+
+# Join error and standard output into one file
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+
+eval "$(conda shell.bash hook)"
+conda activate DLC-CPU
+python TrainNetwork.py
+exit 0
+
